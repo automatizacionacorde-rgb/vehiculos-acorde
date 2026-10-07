@@ -33,6 +33,7 @@ body { margin: 0; background: var(--background); color: var(--foreground); font-
 .eyebrow { margin: 0 0 8px; color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(28px, 4vw, 38px); line-height: 1.1; letter-spacing: -.03em; }
 .intro { color: var(--muted); font-size: 15px; line-height: 1.5; margin: 12px 0 28px; }
+.particular-note { display: flex; align-items: flex-start; gap: 8px; margin: -12px 0 24px; padding: 10px 12px; border: 1px solid #c7dbf2; border-radius: 9px; background: #f2f7fd; color: #1d4f8c; font-size: 13px; line-height: 1.4; }.particular-note svg { flex: none; margin-top: 1px; }
 .progress { display: flex; align-items: center; margin-bottom: 30px; }
 .progress-step { display: flex; align-items: center; gap: 7px; color: #7b8793; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .step-number { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid #cbd5df; border-radius: 50%; font-size: 10px; }

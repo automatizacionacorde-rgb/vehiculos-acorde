@@ -4,7 +4,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Identifica tu vehículo | Acorde',
-  description: 'Selector de vehículo para cotizaciones de seguro de auto.',
+  description: 'Selector de vehículo para cotizaciones de seguro de auto de uso particular.',
   generator: 'v0.app',
   icons: {
     icon: [

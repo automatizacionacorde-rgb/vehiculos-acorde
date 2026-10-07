@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { Check, ChevronDown, Loader2, ShieldCheck } from 'lucide-react'
+import { Check, ChevronDown, Info, Loader2, ShieldCheck } from 'lucide-react'
 
 type Option = { value: string; label: string; id?: string }
 
@@ -99,9 +99,10 @@ export function VehicleSelector() {
     <main className="selector-page">
       <section className="selector-shell" aria-labelledby="selector-title">
         <div className="brand-mark" aria-hidden="true"><ShieldCheck size={22} strokeWidth={2.5} /></div>
-        <p className="eyebrow">Cotización de seguro</p>
+        <p className="eyebrow">Cotización de seguro · Uso particular</p>
         <h1 id="selector-title">Identifica tu vehículo</h1>
         <p className="intro">Selecciona los datos de tu vehículo para continuar con tu cotización.</p>
+        <p className="particular-note" role="note"><Info size={16} aria-hidden="true" /><span>Por ahora el cotizador está disponible únicamente para vehículos de uso <strong>particular</strong>.</span></p>
 
         <div className="progress" aria-label="Progreso de selección">
           {[['01', 'Marca', Boolean(marca)], ['02', 'Modelo', Boolean(modelo)], ['03', 'Año', Boolean(anio)], ['04', 'Versión', Boolean(version)]].map(([number, label, done], index) => (

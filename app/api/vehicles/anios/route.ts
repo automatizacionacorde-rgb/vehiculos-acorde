@@ -1,5 +1,6 @@
 import { db } from '@/lib/db'
 import { sql } from 'drizzle-orm'
+import { soloParticulares } from '@/lib/vehicles/filters'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'nodejs'
@@ -12,7 +13,8 @@ export async function GET(request: NextRequest) {
   const result = await db.execute<{ value: number }>(sql`
     SELECT DISTINCT "cModelo" AS value
     FROM vehiculos
-    WHERE "cMarcaLarga" = ${marca}
+    WHERE ${soloParticulares}
+      AND "cMarcaLarga" = ${marca}
       AND "cTipo" = ${modelo}
       AND "cModelo" IS NOT NULL
     ORDER BY value DESC
