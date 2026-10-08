@@ -61,6 +61,8 @@ export function VehicleSelector() {
   const [versiones, setVersiones] = useState<Option[]>([])
   const [loading, setLoading] = useState('')
   const [error, setError] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
 
   useEffect(() => {
     setLoading('marca')
@@ -87,10 +89,29 @@ export function VehicleSelector() {
 
   const complete = useMemo(() => Boolean(marca && modelo && anio && version), [marca, modelo, anio, version])
 
-  function changeMarca(value: string) { setMarca(value); setModelo(''); setAnio(''); setVersion(''); setVersionLabel('') }
-  function changeModelo(value: string) { setModelo(value); setAnio(''); setVersion(''); setVersionLabel('') }
-  function changeAnio(value: string) { setAnio(value); setVersion(''); setVersionLabel('') }
+  async function submit() {
+    setSending(true); setError('')
+    try {
+      const response = await fetch('/api/jotform', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ versionId: version }),
+      })
+      const data = await response.json().catch(() => ({})) as { error?: string }
+      if (!response.ok) throw new Error(data.error ?? 'No se pudo enviar la solicitud.')
+      setSent(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo enviar la solicitud.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  function changeMarca(value: string) { setSent(false); setMarca(value); setModelo(''); setAnio(''); setVersion(''); setVersionLabel('') }
+  function changeModelo(value: string) { setSent(false); setModelo(value); setAnio(''); setVersion(''); setVersionLabel('') }
+  function changeAnio(value: string) { setSent(false); setAnio(value); setVersion(''); setVersionLabel('') }
   function changeVersion(value: string) {
+    setSent(false)
     setVersion(value)
     setVersionLabel(versiones.find((option) => option.value === value)?.label ?? '')
   }
@@ -122,6 +143,8 @@ export function VehicleSelector() {
         </div>
 
         {error && <p className="error-message" role="alert">{error}</p>}
+        {complete && !sent && <button type="button" className="submit-button" onClick={submit} disabled={sending}>{sending ? <><Loader2 aria-hidden="true" className="animate-spin" size={18} /> Enviando…</> : 'Enviar solicitud'}</button>}
+        {sent && <div className="selection-confirmation" role="status"><Check size={18} /><div><strong>Solicitud enviada</strong><span>Recibimos los datos de tu vehículo.</span></div></div>}
         {complete && <div className="selection-confirmation" role="status"><Check size={18} /><div><strong>Vehículo identificado</strong><span>{marca} {modelo} {anio} · {versionLabel}</span></div></div>}
       </section>
     </main>
