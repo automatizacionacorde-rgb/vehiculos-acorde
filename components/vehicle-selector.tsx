@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Check, ChevronDown, Info, Loader2, ShieldCheck } from 'lucide-react'
+import { getOptions, type Option } from '@/lib/vehicles/options'
 
-type Option = { value: string; label: string; id?: string }
 
 type FieldProps = {
   label: string
@@ -36,17 +36,6 @@ function SelectField({ label, value, options, disabled, loading, onChange }: Fie
       </span>
     </label>
   )
-}
-
-async function getOptions(path: string): Promise<Option[]> {
-  const response = await fetch(path)
-  if (!response.ok) throw new Error('No se pudieron cargar las opciones')
-  const data = await response.json() as Array<{ value: string; label?: string; id?: string }>
-  return data.map((option) => ({
-    value: option.id ?? String(option.value),
-    label: option.label ?? String(option.value),
-    id: option.id,
-  }))
 }
 
 export function VehicleSelector() {
