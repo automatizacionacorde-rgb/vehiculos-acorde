@@ -1,5 +1,5 @@
-import VehicleWidget from '@/components/vehicle-widget'
+import VehicleSelector from '@/components/vehicle-selector'
 
 export default function Page() {
-  return <VehicleWidget />
+  return <VehicleSelector widget />
 }

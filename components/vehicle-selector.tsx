@@ -1,9 +1,18 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import Script from 'next/script'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, ChevronDown, Info, Loader2, ShieldCheck } from 'lucide-react'
 import { getOptions, type Option } from '@/lib/vehicles/options'
 
+// Modo widget para Jotform (iFrame widget): https://www.jotform.com/developers/widgets/
+type JFCustomWidgetApi = {
+  subscribe: (event: 'ready' | 'submit', callback: () => void) => void
+  sendData: (data: { value: string }) => void
+  sendSubmit: (data: { valid: boolean; value: string }) => void
+  requestFrameResize: (data: { height?: number; width?: number }) => void
+}
+declare global { interface Window { JFCustomWidget?: JFCustomWidgetApi } }
 
 type FieldProps = {
   label: string
@@ -38,7 +47,7 @@ function SelectField({ label, value, options, disabled, loading, onChange }: Fie
   )
 }
 
-export function VehicleSelector() {
+export function VehicleSelector({ widget = false }: { widget?: boolean }) {
   const [marca, setMarca] = useState('')
   const [modelo, setModelo] = useState('')
   const [anio, setAnio] = useState('')
@@ -96,6 +105,38 @@ export function VehicleSelector() {
     }
   }
 
+  // Valor que recibe el campo de Jotform: "MARCA | MODELO | AÑO | VERSIÓN".
+  const widgetValue = complete
+    ? [marcas.find((o) => o.value === marca)?.label ?? marca, modelos.find((o) => o.value === modelo)?.label ?? modelo, anios.find((o) => o.value === anio)?.label ?? anio, versionLabel].join(' | ')
+    : ''
+  const rootRef = useRef<HTMLElement>(null)
+  const valueRef = useRef(widgetValue)
+  valueRef.current = widgetValue
+  const [jotformReady, setJotformReady] = useState(false)
+
+  useEffect(() => {
+    if (widget && jotformReady) window.JFCustomWidget?.sendData({ value: widgetValue })
+  }, [widget, jotformReady, widgetValue])
+
+  // Ajusta el alto del iframe al contenido para que no aparezca scroll.
+  useEffect(() => {
+    const root = rootRef.current
+    if (!widget || !jotformReady || !root) return
+    const resize = () => window.JFCustomWidget?.requestFrameResize({ height: Math.ceil(root.getBoundingClientRect().height) })
+    const observer = new ResizeObserver(resize)
+    observer.observe(root)
+    return () => observer.disconnect()
+  }, [widget, jotformReady])
+
+  function onJotformLoad() {
+    const api = window.JFCustomWidget
+    if (!api) return
+    api.subscribe('ready', () => {
+      api.subscribe('submit', () => api.sendSubmit({ valid: valueRef.current !== '', value: valueRef.current }))
+      setJotformReady(true)
+    })
+  }
+
   function changeMarca(value: string) { setSent(false); setMarca(value); setModelo(''); setAnio(''); setVersion(''); setVersionLabel('') }
   function changeModelo(value: string) { setSent(false); setModelo(value); setAnio(''); setVersion(''); setVersionLabel('') }
   function changeAnio(value: string) { setSent(false); setAnio(value); setVersion(''); setVersionLabel('') }
@@ -106,7 +147,8 @@ export function VehicleSelector() {
   }
 
   return (
-    <main className="selector-page">
+    <main className={widget ? 'selector-page widget-embed' : 'selector-page'} ref={rootRef}>
+      {widget && <Script src="https://js.jotform.com/JotFormCustomWidget.min.js" strategy="afterInteractive" onLoad={onJotformLoad} />}
       <section className="selector-shell" aria-labelledby="selector-title">
         <div className="brand-mark" aria-hidden="true"><ShieldCheck size={22} strokeWidth={2.5} /></div>
         <p className="eyebrow">Cotización de seguro · Uso particular</p>
@@ -132,8 +174,8 @@ export function VehicleSelector() {
         </div>
 
         {error && <p className="error-message" role="alert">{error}</p>}
-        {complete && !sent && <button type="button" className="submit-button" onClick={submit} disabled={sending}>{sending ? <><Loader2 aria-hidden="true" className="animate-spin" size={18} /> Enviando…</> : 'Enviar solicitud'}</button>}
-        {sent && <div className="selection-confirmation" role="status"><Check size={18} /><div><strong>Solicitud enviada</strong><span>Recibimos los datos de tu vehículo.</span></div></div>}
+        {!widget && complete && !sent && <button type="button" className="submit-button" onClick={submit} disabled={sending}>{sending ? <><Loader2 aria-hidden="true" className="animate-spin" size={18} /> Enviando…</> : 'Enviar solicitud'}</button>}
+        {!widget && sent && <div className="selection-confirmation" role="status"><Check size={18} /><div><strong>Solicitud enviada</strong><span>Recibimos los datos de tu vehículo.</span></div></div>}
         {complete && <div className="selection-confirmation" role="status"><Check size={18} /><div><strong>Vehículo identificado</strong><span>{marca} {modelo} {anio} · {versionLabel}</span></div></div>}
       </section>
     </main>
