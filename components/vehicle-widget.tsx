@@ -31,7 +31,17 @@ type FieldProps = {
 
 function ComboField({ label, level, disabled, loading, onText }: FieldProps) {
   const listId = useId()
-  const invalid = level.text.trim() !== '' && !level.selected && !loading
+  const [blurred, setBlurred] = useState(false)
+  const invalid = blurred && level.text.trim() !== '' && !level.selected && !loading
+
+  // Al salir del campo, si lo escrito coincide con una sola opción, se completa.
+  function onBlur() {
+    setBlurred(true)
+    const wanted = level.text.trim().toLowerCase()
+    if (!wanted || level.selected) return
+    const matches = level.options.filter((option) => option.label.toLowerCase().includes(wanted))
+    if (matches.length === 1) onText(matches[0].label)
+  }
   return (
     <label className="widget-field">
       <span className="widget-label">{label}</span>
@@ -43,6 +53,8 @@ function ComboField({ label, level, disabled, loading, onText }: FieldProps) {
         placeholder={loading ? 'Cargando opciones…' : `Escribe o elige ${label.toLowerCase()}`}
         autoComplete="off"
         onChange={(event) => onText(event.target.value)}
+        onFocus={() => setBlurred(false)}
+        onBlur={onBlur}
       />
       <datalist id={listId}>
         {level.options.map((option) => <option key={option.value} value={option.label} />)}
