@@ -113,10 +113,11 @@ export function VehicleSelector({ widget = false }: { widget?: boolean }) {
   const valueRef = useRef(widgetValue)
   valueRef.current = widgetValue
   const [jotformReady, setJotformReady] = useState(false)
+  const [readyTick, setReadyTick] = useState(0)
 
   useEffect(() => {
     if (widget && jotformReady) window.JFCustomWidget?.sendData({ value: widgetValue })
-  }, [widget, jotformReady, widgetValue])
+  }, [widget, jotformReady, readyTick, widgetValue])
 
   // Ajusta el alto del iframe al contenido para que no aparezca scroll.
   useEffect(() => {
@@ -126,15 +127,16 @@ export function VehicleSelector({ widget = false }: { widget?: boolean }) {
     const observer = new ResizeObserver(resize)
     observer.observe(root)
     return () => observer.disconnect()
-  }, [widget, jotformReady])
+  }, [widget, jotformReady, readyTick])
 
+  // El aviso 'ready' de Jotform puede llegar antes de suscribirnos, así que nada depende de él:
+  // el envío y el valor se registran en cuanto carga el SDK, y 'ready' solo reenvía el valor.
   function onJotformLoad() {
     const api = window.JFCustomWidget
     if (!api) return
-    api.subscribe('ready', () => {
-      api.subscribe('submit', () => api.sendSubmit({ valid: valueRef.current !== '', value: valueRef.current }))
-      setJotformReady(true)
-    })
+    api.subscribe('submit', () => api.sendSubmit({ valid: valueRef.current !== '', value: valueRef.current }))
+    api.subscribe('ready', () => setReadyTick((tick) => tick + 1))
+    setJotformReady(true)
   }
 
   function changeMarca(value: string) { setSent(false); setMarca(value); setModelo(''); setAnio(''); setVersion(''); setVersionLabel('') }
