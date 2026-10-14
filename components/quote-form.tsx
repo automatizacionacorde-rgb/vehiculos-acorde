@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { CalendarDays, ChevronDown, Loader2 } from 'lucide-react'
 import { useVehicleOptions } from '@/lib/vehicles/use-vehicle-options'
 import type { Option } from '@/lib/vehicles/options'
+import { inter } from '@/lib/fonts'
 
 const TRACKING_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'landing_url', 'producto'] as const
 
@@ -91,7 +92,7 @@ export function QuoteForm() {
 
   if (sent) {
     return (
-      <main className="quote-page">
+      <main className={`quote-page ${inter.className}`}>
         <h1 className="quote-title">¡Gracias!</h1>
         <p className="quote-subtitle">Recibimos tus datos. Un asesor te contactará.</p>
       </main>
@@ -99,7 +100,7 @@ export function QuoteForm() {
   }
 
   return (
-    <main className="quote-page">
+    <main className={`quote-page ${inter.className}`}>
       <h1 className="quote-title">Cotiza tu seguro de auto</h1>
       <p className="quote-subtitle">Completa tus datos y un asesor te contactará</p>
       <hr className="quote-rule" />
