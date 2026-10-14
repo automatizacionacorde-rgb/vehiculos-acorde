@@ -20,13 +20,15 @@ type FieldProps = {
   options: Option[]
   disabled?: boolean
   loading?: boolean
+  widget?: boolean
   onChange: (value: string) => void
 }
 
-function SelectField({ label, value, options, disabled, loading, onChange }: FieldProps) {
+function SelectField({ label, value, options, disabled, loading, widget, onChange }: FieldProps) {
+  const slug = label.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
   return (
-    <label className="field-group">
-      <span className="field-label">{label}</span>
+    <label className={`field-group field-${slug}`}>
+      <span className="field-label">{label}{widget && <span className="field-required"> *</span>}</span>
       <span className="select-wrap">
         <select
           className="vehicle-select"
@@ -34,7 +36,7 @@ function SelectField({ label, value, options, disabled, loading, onChange }: Fie
           disabled={disabled || loading}
           onChange={(event) => onChange(event.target.value)}
         >
-          <option value="">{loading ? 'Cargando opciones…' : `Selecciona ${label.toLowerCase()}`}</option>
+          <option value="">{loading ? 'Cargando opciones…' : widget ? 'Seleccione' : `Selecciona ${label.toLowerCase()}`}</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -169,10 +171,10 @@ export function VehicleSelector({ widget = false }: { widget?: boolean }) {
         </div>
 
         <div className="selector-form">
-          <SelectField label="Marca" value={marca} options={marcas} loading={loading === 'marca'} onChange={changeMarca} />
-          <SelectField label="Modelo" value={modelo} options={modelos} disabled={!marca} loading={loading === 'modelo'} onChange={changeModelo} />
-          <SelectField label="Año" value={anio} options={anios} disabled={!modelo} loading={loading === 'anio'} onChange={changeAnio} />
-          <SelectField label="Versión" value={version} options={versiones} disabled={!anio} loading={loading === 'version'} onChange={changeVersion} />
+          <SelectField label="Marca" widget={widget} value={marca} options={marcas} loading={loading === 'marca'} onChange={changeMarca} />
+          <SelectField label="Modelo" widget={widget} value={modelo} options={modelos} disabled={!marca} loading={loading === 'modelo'} onChange={changeModelo} />
+          <SelectField label="Año" widget={widget} value={anio} options={anios} disabled={!modelo} loading={loading === 'anio'} onChange={changeAnio} />
+          <SelectField label="Versión" widget={widget} value={version} options={versiones} disabled={!anio} loading={loading === 'version'} onChange={changeVersion} />
         </div>
 
         {error && <p className="error-message" role="alert">{error}</p>}

@@ -56,3 +56,25 @@ html:has(.widget-page), html:has(.widget-page) body, html:has(.widget-embed), ht
 .widget-input.is-invalid { border-color: #b42318; }
 
 .widget-embed { min-height: 0; padding: 8px; }
+
+/* Modo widget: se ve como los campos del formulario de Jotform (100seguros). */
+.widget-embed { font-family: Inter, Arial, Helvetica, sans-serif; }
+.widget-embed .selector-shell { width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.widget-embed .brand-mark, .widget-embed .eyebrow, .widget-embed h1, .widget-embed .intro, .widget-embed .progress, .widget-embed .selection-confirmation { display: none; }
+.widget-embed .particular-note { order: 2; margin: 14px 0 0; padding: 0; border: 0; background: transparent; color: #9a566f; font-size: 13px; }
+.widget-embed .particular-note strong { color: #760304; }
+.widget-embed .selector-shell { display: flex; flex-direction: column; }
+.widget-embed .selector-form { order: 1; grid-template-columns: repeat(6, 1fr); gap: 22px 20px; }
+.widget-embed .field-group { gap: 8px; }
+.widget-embed .field-marca, .widget-embed .field-modelo { grid-column: span 3; }
+.widget-embed .field-ano { grid-column: span 2; }
+.widget-embed .field-version { grid-column: span 4; }
+.widget-embed .field-label { color: #760304; font-size: 17px; font-weight: 600; }
+.widget-embed .field-required { color: #c92627; }
+.widget-embed .vehicle-select { height: 50px; border: 1px solid #9a566f; border-radius: 4px; background: rgb(255 255 255 / 35%); color: #4f5c74; font-size: 16px; }
+.widget-embed .vehicle-select:focus { border-color: #760304; box-shadow: 0 0 0 3px rgb(118 3 4 / 12%); }
+.widget-embed .vehicle-select:disabled { color: #8b94a5; background: rgb(255 255 255 / 20%); }
+.widget-embed .select-icon { top: 16px; color: #4f5c74; }
+.widget-embed .error-message { order: 3; }
+@media (max-width: 520px) { .widget-embed .field-marca, .widget-embed .field-modelo, .widget-embed .field-ano, .widget-embed .field-version { grid-column: 1 / -1; } }
+.widget-embed .particular-note svg { display: none; }
