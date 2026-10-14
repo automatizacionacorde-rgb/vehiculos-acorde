@@ -131,7 +131,7 @@ export function QuoteForm() {
 
         <Field label="Marca"><Select value={v.marca} options={v.marcas} onChange={v.changeMarca} loading={v.loading === 'marca'} /></Field>
         <Field label="Modelo"><Select value={v.anio} options={v.anios} onChange={v.changeAnio} disabled={!v.marca} loading={v.loading === 'anio'} /></Field>
-        <Field label="Submarca" className="quote-full"><Select value={v.submarca} options={v.submarcas} onChange={v.changeSubmarca} disabled={!v.anio} loading={v.loading === 'submarca'} /></Field>
+        <Field label="Submarca"><Select value={v.submarca} options={v.submarcas} onChange={v.changeSubmarca} disabled={!v.anio} loading={v.loading === 'submarca'} /></Field>
 
         <Field label="Cobertura"><Select value="Amplia" options={COBERTURA} onChange={() => {}} /></Field>
 
