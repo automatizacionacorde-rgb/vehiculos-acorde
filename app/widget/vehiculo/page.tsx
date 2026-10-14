@@ -1,5 +1,5 @@
-import VehicleSelector from '@/components/vehicle-selector'
+import QuoteForm from '@/components/quote-form'
 
 export default function Page() {
-  return <VehicleSelector widget />
+  return <QuoteForm />
 }
