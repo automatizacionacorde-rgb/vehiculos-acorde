@@ -76,7 +76,7 @@ export function QuoteForm() {
       const response = await fetch('/api/cotizar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, paterno, materno, email, telefono, sexo, fechaNacimiento, codigoPostal, versionId: v.submarca, ...tracking }),
+        body: JSON.stringify({ nombre, paterno, materno, email, telefono, sexo, fechaNacimiento, codigoPostal, versionId: v.descripcion, ...tracking }),
       })
       const data = await response.json().catch(() => ({})) as { error?: string; thankYouUrl?: string }
       if (!response.ok) throw new Error(data.error ?? 'No se pudo enviar la solicitud.')
@@ -132,12 +132,13 @@ export function QuoteForm() {
         <Field label="Marca"><Select value={v.marca} options={v.marcas} onChange={v.changeMarca} loading={v.loading === 'marca'} /></Field>
         <Field label="Modelo"><Select value={v.anio} options={v.anios} onChange={v.changeAnio} disabled={!v.marca} loading={v.loading === 'anio'} /></Field>
         <Field label="Submarca"><Select value={v.submarca} options={v.submarcas} onChange={v.changeSubmarca} disabled={!v.anio} loading={v.loading === 'submarca'} /></Field>
+        <Field label="Descripción"><Select value={v.descripcion} options={v.descripciones} onChange={v.changeDescripcion} disabled={!v.submarca} loading={v.loading === 'descripcion'} /></Field>
 
         <Field label="Cobertura"><Select value="Amplia" options={COBERTURA} onChange={() => {}} /></Field>
 
         <p className="quote-note quote-full">Por ahora el cotizador está disponible únicamente para vehículos de uso <strong>particular</strong>.</p>
         {(error || v.error) && <p className="quote-error quote-full" role="alert">{error || v.error}</p>}
-        <button className="quote-submit quote-full" type="submit" disabled={sending || !v.submarca}>
+        <button className="quote-submit quote-full" type="submit" disabled={sending || !v.descripcion}>
           {sending ? <><Loader2 className="animate-spin" size={18} aria-hidden="true" /> Enviando…</> : 'Enviar'}
         </button>
       </form>

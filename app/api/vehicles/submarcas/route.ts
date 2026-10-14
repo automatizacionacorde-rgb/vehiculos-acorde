@@ -5,25 +5,22 @@ import { NextRequest } from 'next/server'
 
 export const runtime = 'nodejs'
 
-// Submarcas de una marca y año: cada opción es "TIPO VERSIÓN" y su id identifica el vehículo exacto.
+// Submarcas (tipo, p. ej. AVEO) de una marca y año. La descripción sale de /api/vehicles/versiones.
 export async function GET(request: NextRequest) {
   const marca = request.nextUrl.searchParams.get('marca')?.trim()
   const anio = request.nextUrl.searchParams.get('anio')?.trim()
   if (!marca || !anio || !/^\d{4}$/.test(anio)) return Response.json({ error: 'Los parámetros marca y anio son requeridos.' }, { status: 400 })
 
-  const result = await db.execute<{ id: string; tipo: string; version: string }>(sql`
-    SELECT MIN(id)::text AS id, BTRIM("cTipo") AS tipo, COALESCE(BTRIM("cVersion"), '') AS version
+  const result = await db.execute<{ value: string }>(sql`
+    SELECT DISTINCT BTRIM("cTipo") AS value
     FROM vehiculos
     WHERE ${soloParticulares}
       AND "cMarcaLarga" = ${marca}
       AND "cModelo" = ${anio}::integer
       AND "cTipo" IS NOT NULL
-    GROUP BY BTRIM("cTipo"), COALESCE(BTRIM("cVersion"), '')
-    ORDER BY tipo ASC, version ASC
+      AND BTRIM("cTipo") <> ''
+    ORDER BY value ASC
   `)
 
-  return Response.json(result.rows.map((row) => {
-    const label = `${row.tipo} ${row.version}`.trim()
-    return { id: row.id, value: label, label }
-  }))
+  return Response.json(result.rows.map((row) => ({ value: row.value, label: row.value })))
 }
