@@ -76,7 +76,7 @@ export function QuoteForm() {
       const response = await fetch('/api/cotizar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, paterno, materno, email, telefono, sexo, fechaNacimiento, codigoPostal, versionId: v.version, ...tracking }),
+        body: JSON.stringify({ nombre, paterno, materno, email, telefono, sexo, fechaNacimiento, codigoPostal, versionId: v.submarca, ...tracking }),
       })
       const data = await response.json().catch(() => ({})) as { error?: string; thankYouUrl?: string }
       if (!response.ok) throw new Error(data.error ?? 'No se pudo enviar la solicitud.')
@@ -130,15 +130,14 @@ export function QuoteForm() {
         <Field label="Código Postal"><input className="quote-input" inputMode="numeric" value={codigoPostal} onChange={(e) => setCodigoPostal(e.target.value.replace(/\D/g, '').slice(0, 5))} pattern="\d{5}" title="5 dígitos" required autoComplete="postal-code" /></Field>
 
         <Field label="Marca"><Select value={v.marca} options={v.marcas} onChange={v.changeMarca} loading={v.loading === 'marca'} /></Field>
-        <Field label="Modelo"><Select value={v.modelo} options={v.modelos} onChange={v.changeModelo} disabled={!v.marca} loading={v.loading === 'modelo'} /></Field>
-        <Field label="Año"><Select value={v.anio} options={v.anios} onChange={v.changeAnio} disabled={!v.modelo} loading={v.loading === 'anio'} /></Field>
-        <Field label="Versión"><Select value={v.version} options={v.versiones} onChange={v.changeVersion} disabled={!v.anio} loading={v.loading === 'version'} /></Field>
+        <Field label="Modelo"><Select value={v.anio} options={v.anios} onChange={v.changeAnio} disabled={!v.marca} loading={v.loading === 'anio'} /></Field>
+        <Field label="Submarca" className="quote-full"><Select value={v.submarca} options={v.submarcas} onChange={v.changeSubmarca} disabled={!v.anio} loading={v.loading === 'submarca'} /></Field>
 
         <Field label="Cobertura"><Select value="Amplia" options={COBERTURA} onChange={() => {}} /></Field>
 
         <p className="quote-note quote-full">Por ahora el cotizador está disponible únicamente para vehículos de uso <strong>particular</strong>.</p>
         {(error || v.error) && <p className="quote-error quote-full" role="alert">{error || v.error}</p>}
-        <button className="quote-submit quote-full" type="submit" disabled={sending || !v.version}>
+        <button className="quote-submit quote-full" type="submit" disabled={sending || !v.submarca}>
           {sending ? <><Loader2 className="animate-spin" size={18} aria-hidden="true" /> Enviando…</> : 'Enviar'}
         </button>
       </form>
