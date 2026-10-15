@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CalendarDays, ChevronDown, Loader2 } from 'lucide-react'
 import { useVehicleOptions } from '@/lib/vehicles/use-vehicle-options'
 import type { Option } from '@/lib/vehicles/options'
@@ -59,6 +59,7 @@ export function QuoteForm() {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
   const [sent, setSent] = useState(false)
+  const pageRef = useRef<HTMLElement>(null)
 
   // Parámetros UTM (y landing_url / producto) que llegan en la URL de la página.
   useEffect(() => {
@@ -68,6 +69,16 @@ export function QuoteForm() {
     if (!values.landing_url) values.landing_url = document.referrer
     setTracking(values)
   }, [])
+
+  // Cuando la página va dentro de un iframe (WordPress), avisa su alto para que el iframe se ajuste solo.
+  useEffect(() => {
+    const page = pageRef.current
+    if (!page || window.parent === window) return
+    const report = () => window.parent.postMessage({ type: 'acorde:height', height: Math.ceil(page.getBoundingClientRect().height) }, '*')
+    const observer = new ResizeObserver(report)
+    observer.observe(page)
+    return () => observer.disconnect()
+  }, [sent])
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
@@ -92,7 +103,7 @@ export function QuoteForm() {
 
   if (sent) {
     return (
-      <main className={`quote-page ${inter.className}`}>
+      <main className={`quote-page ${inter.className}`} ref={pageRef}>
         <h1 className="quote-title">¡Gracias!</h1>
         <p className="quote-subtitle">Recibimos tus datos. Un asesor te contactará.</p>
       </main>
@@ -100,7 +111,7 @@ export function QuoteForm() {
   }
 
   return (
-    <main className={`quote-page ${inter.className}`}>
+    <main className={`quote-page ${inter.className}`} ref={pageRef}>
       <h1 className="quote-title">Cotiza tu seguro de auto</h1>
       <p className="quote-subtitle">Completa tus datos y un asesor te contactará</p>
       <hr className="quote-rule" />

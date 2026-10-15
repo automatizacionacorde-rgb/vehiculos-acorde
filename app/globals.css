@@ -107,5 +107,7 @@ select.quote-input:valid { color: #4f5c74; }
 .quote-error { margin: 0; color: #b42318; font-size: 14px; }
 .quote-submit { height: 52px; margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 5px; background: #740000; color: #fff; font: inherit; font-size: 20px; font-weight: 500; cursor: pointer; }
 .quote-submit:disabled { opacity: .55; cursor: not-allowed; }
-@media (max-width: 560px) { .quote-page { padding: 24px 18px 30px; } .quote-grid { grid-template-columns: 1fr; } .quote-name { grid-template-columns: 1fr; } .quote-name label + label { margin-top: 12px; } .quote-rule { margin-bottom: 36px; } }
+@media (max-width: 420px) { .quote-page { padding: 24px 18px 30px; } .quote-grid { grid-template-columns: 1fr; } .quote-name { grid-template-columns: 1fr; } .quote-name label + label { margin-top: 12px; } .quote-rule { margin-bottom: 36px; } }
 select.quote-input:disabled { color: #9a5771; }
+
+@media (max-width: 640px) { .quote-page { padding-left: 22px; padding-right: 22px; } .quote-grid { column-gap: 20px; } .quote-label { font-size: 18px; } }

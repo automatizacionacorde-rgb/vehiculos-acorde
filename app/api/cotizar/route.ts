@@ -49,9 +49,15 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null) as Record<string, unknown> | null
   if (!body) return Response.json({ error: 'Solicitud inválida.' }, { status: 400 })
 
-  const { JOTFORM_QUOTE_FORM_ID, JOTFORM_QUOTE_THANKYOU_URL } = process.env
-  if (!JOTFORM_QUOTE_FORM_ID || !/^\d{6,20}$/.test(JOTFORM_QUOTE_FORM_ID)) {
-    console.error('Cotizar: falta JOTFORM_QUOTE_FORM_ID')
+  // Tolera espacios, saltos de línea y comillas que suelen colarse al pegar la variable en Vercel.
+  const JOTFORM_QUOTE_FORM_ID = process.env.JOTFORM_QUOTE_FORM_ID?.trim().replace(/^["']+|["']+$/g, '').trim()
+  const JOTFORM_QUOTE_THANKYOU_URL = process.env.JOTFORM_QUOTE_THANKYOU_URL?.trim()
+  if (!JOTFORM_QUOTE_FORM_ID) {
+    console.error('Cotizar: la variable JOTFORM_QUOTE_FORM_ID no existe en este despliegue o está vacía')
+    return Response.json({ error: 'El envío no está configurado.' }, { status: 500 })
+  }
+  if (!/^\d{6,20}$/.test(JOTFORM_QUOTE_FORM_ID)) {
+    console.error(`Cotizar: JOTFORM_QUOTE_FORM_ID debe ser solo el número del formulario (longitud recibida: ${JOTFORM_QUOTE_FORM_ID.length})`)
     return Response.json({ error: 'El envío no está configurado.' }, { status: 500 })
   }
 
