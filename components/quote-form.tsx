@@ -8,10 +8,10 @@ import { inter } from '@/lib/fonts'
 
 const TRACKING_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'landing_url', 'producto'] as const
 
-function Field({ label, hint, className = '', children }: { label: string; hint?: string; className?: string; children: React.ReactNode }) {
+function Field({ label, hint, optional, className = '', children }: { label: string; hint?: string; optional?: boolean; className?: string; children: React.ReactNode }) {
   return (
     <div className={`quote-field ${className}`}>
-      <label className="quote-label"><span>{label} <span className="quote-required">*</span></span>{children}</label>
+      <label className="quote-label"><span>{label}{!optional && <> <span className="quote-required">*</span></>}</span>{children}</label>
       {hint && <span className="quote-hint">{hint}</span>}
     </div>
   )
@@ -117,14 +117,9 @@ export function QuoteForm() {
       <hr className="quote-rule" />
 
       <form className="quote-grid" onSubmit={submit} noValidate={false}>
-        <div className="quote-field quote-full">
-          <span className="quote-label"><span>Nombre <span className="quote-required">*</span></span></span>
-          <div className="quote-name">
-            <label><input className="quote-input" value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={60} required autoComplete="given-name" /><span className="quote-hint">Nombre</span></label>
-            <label><input className="quote-input" value={paterno} onChange={(e) => setPaterno(e.target.value)} maxLength={60} required autoComplete="family-name" /><span className="quote-hint">Apellido Paterno</span></label>
-            <label><input className="quote-input" value={materno} onChange={(e) => setMaterno(e.target.value)} maxLength={60} /><span className="quote-hint">Apellido Materno</span></label>
-          </div>
-        </div>
+        <Field label="Nombre" className="quote-full quote-spaced"><input className="quote-input" value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={60} required autoComplete="given-name" /></Field>
+        <Field label="Apellido Paterno" className="quote-spaced"><input className="quote-input" value={paterno} onChange={(e) => setPaterno(e.target.value)} maxLength={60} required autoComplete="family-name" /></Field>
+        <Field label="Apellido Materno" optional className="quote-spaced"><input className="quote-input" value={materno} onChange={(e) => setMaterno(e.target.value)} maxLength={60} /></Field>
 
         <Field label="Email" hint="ejemplo@ejemplo.com"><input className="quote-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={120} required autoComplete="email" /></Field>
         <Field label="Número de teléfono"><input className="quote-input" type="tel" inputMode="numeric" placeholder="(000) 000-0000" value={telefono} onChange={(e) => setTelefono(maskPhone(e.target.value))} pattern="\(\d{3}\) \d{3}-\d{4}" title="10 dígitos" required autoComplete="tel-national" /></Field>
