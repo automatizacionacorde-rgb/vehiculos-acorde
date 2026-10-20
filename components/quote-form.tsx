@@ -118,7 +118,7 @@ export function QuoteForm() {
 
       <form className="quote-grid" onSubmit={submit} noValidate={false}>
         <div className="quote-field quote-full">
-          <span className="quote-label"><span>Nombre, Apellido Paterno, Apellido materno <span className="quote-required">*</span></span></span>
+          <span className="quote-label"><span>Nombre <span className="quote-required">*</span></span></span>
           <div className="quote-name">
             <label><input className="quote-input" value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={60} required autoComplete="given-name" /><span className="quote-hint">Nombre</span></label>
             <label><input className="quote-input" value={paterno} onChange={(e) => setPaterno(e.target.value)} maxLength={60} required autoComplete="family-name" /><span className="quote-hint">Apellido Paterno</span></label>
