@@ -1,6 +1,6 @@
 ---
 name: cotizar-auto
-description: Cotiza un seguro de auto de uso particular con Acorde. Úsala cuando alguien por WhatsApp quiera cotizar o asegurar su auto. Recoge los datos en la conversación y los envía al formulario de cotización.
+description: Cotiza un seguro de auto de uso particular con Acorde. Úsala cuando el cliente elija Cotizaciones → Auto en el menú (skill menu-acorde) o diga directamente que quiere cotizar o asegurar su auto. Recoge los datos en la conversación y los envía al formulario de cotización.
 ---
 
 # Cotizar seguro de auto (Acorde)
